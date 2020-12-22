@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Data.SQLite
 
 Public Class LocalSetupDB
 
@@ -37,6 +38,33 @@ Public Class LocalSetupDB
     End Sub
 
     ' New Object created with empty values
+
+    Public Function SetupConnectionLite() As SQLiteConnection
+        Dim sqlite_conn As SQLiteConnection
+        Dim _FilePath As String
+
+        _FilePath = "E:\AMCORP_ERP_APP\Setup_Database\AMCORP_ERP.db"
+        sqlite_conn = New SQLiteConnection("Data Source=" + _FilePath + " Version = 3; New = True; Compress = True; ")
+
+
+        Try
+            sqlite_conn.Open()
+
+        Catch ex As Exception
+            MsgBox("DataBase Connection is not being established " + ex.Message, "ERROR")
+
+        End Try
+
+        If sqlite_conn.State = ConnectionState.Open Then
+            Return sqlite_conn
+        Else
+            Return New SQLiteConnection
+        End If
+
+
+
+    End Function
+
 
     Public Function SetupConnection() As SqlConnection
         ' This will provide Local Database Connection (Setup DB Connection).

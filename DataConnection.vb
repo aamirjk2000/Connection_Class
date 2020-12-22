@@ -1,5 +1,5 @@
 ﻿Imports System.Data.SqlClient
-
+Imports System.Data.SQLite
 
 Public Module DataConnection
 
@@ -114,7 +114,7 @@ Public Module DataConnection
                 MyMessages.Add("Password | " & _Row("Password").ToString)
 
                 Try
-                    BuildString.Password = PW.GetPassword(_Row("Password"), MyDEfault_Values.DBPWWrapper)
+                    BuildString.Password = PW.GetPassword(_Row("Password"), MyDefault_Values.DBPWWrapper)
                 Catch ex As Exception
                     _HasError = True
                     MyMessages.Add("Error ----------- Password")
@@ -129,7 +129,7 @@ Public Module DataConnection
                 MyMessages.Add("PWD | " & _Row("PWD").ToString)
 
                 Try
-                    BuildString.Add("PWD", PW.GetPassword(_Row("PWD"), MyDEfault_Values.DBPWWrapper))
+                    BuildString.Add("PWD", PW.GetPassword(_Row("PWD"), MyDefault_Values.DBPWWrapper))
                 Catch ex As Exception
                     _HasError = True
                     MyMessages.Add("Error ----------- PWD")
@@ -486,7 +486,8 @@ Public Module DataConnection
             MySysMessage.Add("My Row ID  | " & _RowID)
 
             Dim _SetupRow As DataRow                                                    ' Result    
-            Dim _DataTable As DataTable = Get_Setup_Table(MyDefault_Values)  ' Get Local SQL DB Table
+            Dim _DataTable As DataTable = Get_Setup_Table()  ' Get Local SQL DB Table
+            'Dim _DataTable As DataTable = Get_Setup_Table(MyDefault_Values)  ' Get Local SQL DB Table
             Dim _TableView As New DataView                                              ' Set Data Table View
 
             _TableView.Table = _DataTable
@@ -509,6 +510,43 @@ Public Module DataConnection
 
         End Get
     End Property
+
+    Public ReadOnly Property Get_Setup_Table() As DataTable
+        Get
+            Dim _SQLConnection As SQLiteConnection      ' Establish Setup Database Connection
+            Dim _SQLCommand As New SQLiteCommand
+            Dim _Adapter As New SQLiteDataAdapter
+            Dim _DataSet As New DataSet
+            Dim _DataTable As New DataTable
+            Dim _TableName As String = MyDefault_Values.SetupTableName                  ' Schema plus Table Name
+            Dim _FilePath As String = "E:\AMCORP_ERP_APP\Setup_Database\AMCORP_DRP.db"
+
+
+            MySysMessage.Add("Table | " & _TableName)
+
+            Try
+                _SQLCommand.CommandText = "SELECT * FROM " & _TableName & ";"
+                _Adapter = New SQLiteDataAdapter(_SQLCommand.CommandText, SQLite.SQLiteConnection(_FilePath))
+                _Adapter.FillSchema(_DataSet, SchemaType.Mapped, _TableName)
+                _Adapter.Fill(_DataSet, MyDefault_Values.DBSetupTable)
+                _DataTable = _DataSet.Tables(MyDefault_Values.DBSetupTable)
+            Catch ex As SqlException
+                MsgBox(MyDefault_Values.DBSetupTable & " TABLE NOT FOUND")
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+
+            MySysMessage.Add("SQL Command    | " & _SQLCommand.CommandText)
+            MySysMessage.Add("SQL Connection | " & _SQLConnection.State.ToString)
+            MySysMessage.Add("Total Records  | " & _DataTable.Rows.Count.ToString)
+
+            Return _DataTable               ' Return Setup Database records entries table.
+        End Get
+    End Property
+
+
+
+
     Public ReadOnly Property Get_Setup_Table(_Default_Values As Default_Values) As DataTable
         Get
             MyDefault_Values = _Default_Values
