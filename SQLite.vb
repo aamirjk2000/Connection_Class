@@ -1,4 +1,5 @@
 ﻿Imports System.Data.OleDb
+Imports System.Data.SqlClient
 Imports System.Data.SQLite
 
 Public Module SQLite
@@ -19,7 +20,6 @@ Public Module SQLite
 
         Dim sqlite_conn As SQLiteConnection
 
-        '_FilePath = "E:\AMCORP_ERP_APP\Setup_Database\AMCORP_ERP.db"
         sqlite_conn = New SQLiteConnection("Data Source=" + _FilePath + " Version = 3; New = True; Compress = True; ")
 
         Try
@@ -84,6 +84,23 @@ Public Module SQLite
         Next
 
         Return _Command
+    End Function
+
+    Public Function SQLiteDelete(ByVal _DataRow As DataRow, _Connection As SQLiteConnection) As SQLiteCommand
+
+        Dim _Command As New SQLiteCommand("", _Connection)
+        Dim _DataTableName As String = _DataRow.Table().TableName
+        Dim _ID As Long = Convert.ToInt64(_DataRow("ID"))
+
+        If (_ID < 0) Then
+            _ID = _ID * (-1)
+        End If
+
+        _Command.Parameters.AddWithValue("@ID", _ID)
+        _Command.CommandText = "DELETE FROM " + _DataTableName + "WHERE ID=@ID"
+
+        Return _Command
+
     End Function
 
 
