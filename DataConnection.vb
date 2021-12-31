@@ -519,7 +519,7 @@ Public Module DataConnection
             Dim _DataSet As New DataSet
             Dim _DataTable As New DataTable
             Dim _TableName As String = MyDefault_Values.SetupTableName                  ' Schema plus Table Name
-            Dim _FilePath As String = "E:\AMCORP_ERP_APP\Setup_Database\AMCORP_DRP.db"
+            Dim _FilePath As String = "E:\AMCORP_ERP_APP\Setup_Database\AMCORP_ERP.db"
 
 
             MySysMessage.Add("Table | " & _TableName)

@@ -92,12 +92,8 @@ Public Module SQLite
         Dim _DataTableName As String = _DataRow.Table().TableName
         Dim _ID As Long = Convert.ToInt64(_DataRow("ID"))
 
-        If (_ID < 0) Then
-            _ID = _ID * (-1)
-        End If
-
         _Command.Parameters.AddWithValue("@ID", _ID)
-        _Command.CommandText = "DELETE FROM " + _DataTableName + "WHERE ID=@ID"
+        _Command.CommandText = "DELETE FROM " + _DataTableName + " WHERE ID=@ID"
 
         Return _Command
 
