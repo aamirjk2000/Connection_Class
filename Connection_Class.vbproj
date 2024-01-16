@@ -147,7 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient">
-      <Version>4.8.3</Version>
+      <Version>4.8.6</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.115.5</Version>
